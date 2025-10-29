@@ -1,67 +1,44 @@
-import os
-import requests
-import time
+from telegram import Update
+from telegram.ext import Application, CommandHandler
+from telegram import InlineKeyboardButton, InlineKeyboardMarkup
 
-BOT_TOKEN = os.environ.get('BOT_TOKEN', 'YOUR_ACTUAL_BOT_TOKEN_HERE')
+BOT_TOKEN = "8429489568:AAFKr_Izu1GBiM_SOYvT_90VPZGj2ZJfm68"
 
-def get_updates(offset=None):
-    url = f"https://api.telegram.org/bot{BOT_TOKEN}/getUpdates"
-    params = {'offset': offset, 'timeout': 30}
-    response = requests.get(url, params=params)
-    return response.json()
-
-def send_message(chat_id, text):
-    keyboard = {
-        "inline_keyboard": [[
-            {"text": "🟡️ Join Channel 🟡️", "url": "https://t.me/senseiRedirect"}
-        ]]
-    }
+async def start_command(update: Update, context):
+    # Create the button
+    keyboard = [
+        [InlineKeyboardButton("🟡️ Join Channel 🟡️", url="https://t.me/flights_half_off")]
+    ]
+    reply_markup = InlineKeyboardMarkup(keyboard)
     
-    url = f"https://api.telegram.org/bot{BOT_TOKEN}/sendMessage"
-    payload = {
-        "chat_id": chat_id,
-        "text": text,
-        "reply_markup": keyboard,
-        "disable_web_page_preview": True
-    }
-    requests.post(url, json=payload)
+    message = """
+🟡 Welcome to Spidy's World – Where Trust Meets Incredible Savings! 🟡
 
-def main():
-    last_update_id = None
-    welcome_message = """
-Welcome to our Travel Deals Bot, Sensei Reloaded 🟡!
+We know it sounds too good to be true. That’s why we’re building a trusted service you can rely on.
 
-✗ Get ready for amazing travel deals and exclusive offers!
+Experience 50% Off on a World of Services: ✨
 
-📌 Join our channel for the latest updates:  
-https://t.me/senseiRedirect
+• Travel: ✈️ Flights, 🏨 Hotels, 🚗 Rentals, 🚁 Helicopters
+• Lifestyle: 🍽️ Dining, 🎫 Events, 🎢 Six Flags, 🛒 Groceries
+• Essentials: 🚆 Train Passes, 💳 Bills, 🎓 School Fees, 🏥 Hospital Bills
 
-Start your journey with us! 🟡️
+One Platform. Endless Possibilities. Real Savings.
+
+We’re your one-stop partner for making your money go further.
+
+Ready to unlock your deals?
+Join our official channel to get started
+With trust,
+Your Friend, @yrfrnd_spidy
+
     """
-    
-    print("Bot is running...")
-    
-    while True:
-        try:
-            updates = get_updates(last_update_id)
-            
-            if 'result' in updates:
-                for update in updates['result']:
-                    last_update_id = update['update_id'] + 1
-                    
-                    if 'message' in update and 'text' in update['message']:
-                        message = update['message']
-                        chat_id = message['chat']['id']
-                        text = message['text']
-                        
-                        if text == '/start':
-                            send_message(chat_id, welcome_message)
-            
-            time.sleep(1)
-            
-        except Exception as e:
-            print(f"Error: {e}")
-            time.sleep(5)
+    await update.message.reply_text(
+        message, 
+        reply_markup=reply_markup,
+        disable_web_page_preview=True
+    )
 
-if __name__ == '__main__':
-    main()
+app = Application.builder().token(BOT_TOKEN).build()
+app.add_handler(CommandHandler("start", start_command))
+print("Bot is running...")
+app.run_polling()
