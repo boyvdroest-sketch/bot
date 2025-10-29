@@ -1,7 +1,7 @@
 from telegram import Update
 from telegram.ext import Application, CommandHandler
 
-BOT_TOKEN = "8429489568:AAFKr_Izu1GBiM_SOYvT_90VPZGj2ZJfm68"
+BOT_TOKEN = os.environ.get('BOT_TOKEN', 'YOUR_TOKEN_HERE')
 
 async def start_command(update: Update, context):
     message = """
@@ -20,4 +20,5 @@ Start your journey with us! 🟡️
 app = Application.builder().token(BOT_TOKEN).build()
 app.add_handler(CommandHandler("start", start_command))
 print("Bot is running...")
+
 app.run_polling()
