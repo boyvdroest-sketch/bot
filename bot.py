@@ -52,7 +52,10 @@ def main():
     app.add_handler(CommandHandler("start", start_command))
 
     logger.info("Bot is starting (polling)...")
-    app.run_polling()
+    # Use drop_pending_updates to avoid processing a backlog and reduce
+    # chance of conflicts on startup; this is helpful if getUpdates
+    # backlog or a previous instance exists.
+    app.run_polling(drop_pending_updates=True)
 
 
 if __name__ == "__main__":
