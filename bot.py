@@ -2,7 +2,8 @@ from telegram import Update
 from telegram.ext import Application, CommandHandler
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup
 
-BOT_TOKEN = "8429489568:AAFKr_Izu1GBiM_SOYvT_90VPZGj2ZJfm68"
+
+BOT_TOKEN = os.environ.get("TELEGRAM_BOT_TOKEN")
 
 async def start_command(update: Update, context):
         if update.message is None:
@@ -45,4 +46,5 @@ app = Application.builder().token(BOT_TOKEN).build()
 app.add_handler(CommandHandler("start", start_command))
 print("Bot is running...")
 app.run_polling()
+
 
