@@ -5,6 +5,9 @@ from telegram import InlineKeyboardButton, InlineKeyboardMarkup
 BOT_TOKEN = "8429489568:AAFKr_Izu1GBiM_SOYvT_90VPZGj2ZJfm68"
 
 async def start_command(update: Update, context):
+        if update.message is None:
+        return
+
     # Create the button
     keyboard = [
         [InlineKeyboardButton("🟡️ Join Channel 🟡️", url="https://t.me/flights_half_off")]
@@ -42,3 +45,4 @@ app = Application.builder().token(BOT_TOKEN).build()
 app.add_handler(CommandHandler("start", start_command))
 print("Bot is running...")
 app.run_polling()
+
