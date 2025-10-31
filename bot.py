@@ -1,50 +1,58 @@
-from telegram import Update
-from telegram.ext import Application, CommandHandler
-from telegram import InlineKeyboardButton, InlineKeyboardMarkup
+from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
+from telegram.ext import Application, CommandHandler, ContextTypes
+import os
+import sys
+import logging
 
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
+# Secure: read the bot token from an environment variable instead of hard-coding it
 BOT_TOKEN = os.environ.get("TELEGRAM_BOT_TOKEN")
+if not BOT_TOKEN:
+    logger.error("TELEGRAM_BOT_TOKEN environment variable is not set.")
+    sys.exit(1)
 
-async def start_command(update: Update, context):
-        
 
-    # Create the button
+async def start_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    # Guard in case update.message is None for some update types
+    if update.message is None:
+        return
+
     keyboard = [
         [InlineKeyboardButton("🟡️ Join Channel 🟡️", url="https://t.me/flights_half_off")]
     ]
     reply_markup = InlineKeyboardMarkup(keyboard)
-    
-    message = """
-🟡 Welcome to Spidy's World – Where Trust Meets Incredible Savings! 🟡
 
-We know it sounds too good to be true. That’s why we’re building a trusted service you can rely on.
+    message = (
+        "🟡 Welcome to Spidy's World – Where Trust Meets Incredible Savings! 🟡\n\n"
+        "We know it sounds too good to be true. That’s why we’re building a trusted service you can rely on.\n\n"
+        "Experience 50% Off on a World of Services: ✨\n\n"
+        "• Travel: ✈️ Flights, 🏨 Hotels, 🚗 Rentals, 🚁 Helicopters\n"
+        "• Lifestyle: 🍽️ Dining, 🎫 Events, 🎢 Six Flags, 🛒 Groceries\n"
+        "• Essentials: 🚆 Train Passes, 💳 Bills, 🎓 School Fees, 🏥 Hospital Bills\n\n"
+        "One Platform. Endless Possibilities. Real Savings.\n\n"
+        "We’re your one-stop partner for making your money go further.\n\n"
+        "Ready to unlock your deals?\n"
+        "Join our official channel to get started\n"
+        "With trust,\n"
+        "Your Friend, @yrfrnd_spidy\n"
+    )
 
-Experience 50% Off on a World of Services: ✨
-
-• Travel: ✈️ Flights, 🏨 Hotels, 🚗 Rentals, 🚁 Helicopters
-• Lifestyle: 🍽️ Dining, 🎫 Events, 🎢 Six Flags, 🛒 Groceries
-• Essentials: 🚆 Train Passes, 💳 Bills, 🎓 School Fees, 🏥 Hospital Bills
-
-One Platform. Endless Possibilities. Real Savings.
-
-We’re your one-stop partner for making your money go further.
-
-Ready to unlock your deals?
-Join our official channel to get started
-With trust,
-Your Friend, @yrfrnd_spidy
-
-    """
     await update.message.reply_text(
-        message, 
+        message,
         reply_markup=reply_markup,
         disable_web_page_preview=True
     )
 
-app = Application.builder().token(BOT_TOKEN).build()
-app.add_handler(CommandHandler("start", start_command))
-print("Bot is running...")
-app.run_polling()
+
+def main():
+    app = Application.builder().token(BOT_TOKEN).build()
+    app.add_handler(CommandHandler("start", start_command))
+
+    logger.info("Bot is starting (polling)...")
+    app.run_polling()
 
 
-
+if __name__ == "__main__":
+    main()
