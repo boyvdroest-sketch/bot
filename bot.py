@@ -47,6 +47,7 @@ async def start_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 
 def main():
+    # Build the application with the token from env
     app = Application.builder().token(BOT_TOKEN).build()
     app.add_handler(CommandHandler("start", start_command))
 
