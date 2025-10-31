@@ -6,8 +6,7 @@ from telegram import InlineKeyboardButton, InlineKeyboardMarkup
 BOT_TOKEN = os.environ.get("TELEGRAM_BOT_TOKEN")
 
 async def start_command(update: Update, context):
-        if update.message is None:
-        return
+        
 
     # Create the button
     keyboard = [
@@ -46,5 +45,6 @@ app = Application.builder().token(BOT_TOKEN).build()
 app.add_handler(CommandHandler("start", start_command))
 print("Bot is running...")
 app.run_polling()
+
 
 
